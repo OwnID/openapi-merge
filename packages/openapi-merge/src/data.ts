@@ -54,6 +54,8 @@ export interface SingleMergeInputBase {
    * into the final resulting OpenAPI file
    */
   description?: DescriptionMergeBehaviour;
+
+  tagAllOperations?: string;
 }
 
 /**

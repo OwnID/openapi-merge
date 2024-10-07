@@ -77,6 +77,7 @@ async function convertInputs(basePath: string, configInputs: ConfigurationInput[
         pathModification: input.pathModification,
         operationSelection: input.operationSelection,
         description: input.description,
+        tagAllOperations: input.tagAllOperations,
       };
 
       if ('dispute' in input) {
@@ -162,6 +163,15 @@ export async function main(): Promise<void> {
   const outputFullPath = path.join(basePath, config.output);
   logger.log(`## Inputs merged, writing the results out to '${outputFullPath}'`);
 
+  if (config.info) {
+    mergeResult.output.info = config.info;
+  }
+  if (config.servers) {
+    mergeResult.output.servers = config.servers;
+  }
+  if (config.openapiVersion) {
+    mergeResult.output.openapi = config.openapiVersion;
+  }
 
   writeOutput(outputFullPath, mergeResult.output);
 
