@@ -33,7 +33,6 @@
     "ajv": "^6.12.2",
     "atlassian-openapi": "^1.0.8",
     "babel-jest": "^26.0.1",
-    "bolt": "^0.24.10",
     "commander": "^5.1.0",
     "es6-promise": "^4.2.8",
     "eslint": "^7.0.0",
@@ -46,5 +45,8 @@
     "ts-node": "^8.10.1",
     "typescript": "^3.8.3",
     "typescript-json-schema": "^0.50.1"
+  },
+  "devDependencies": {
+    "bolt": "^0.24.10"
   }
 }
