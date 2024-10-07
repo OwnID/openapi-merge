@@ -1,3 +1,6 @@
+import {Swagger} from "atlassian-openapi";
+
+
 export type OperationSelection = {
   /**
    * Only Operatinos that have these tags will be taken from this OpenAPI file. If a single Operation contains
@@ -143,6 +146,8 @@ export interface ConfigurationInputBase {
    * @examples require('./examples-for-schema.ts').DescriptionMergeBehaviourExamples
    */
   description?: DescriptionMergeBehaviour;
+
+  tagAllOperations?: string;
 }
 
 /**
@@ -211,4 +216,10 @@ export type Configuration = {
    * @minLength 1
    */
   output: string;
+
+  openapiVersion?: string;
+
+  info?: Swagger.Info;
+
+  servers?: Swagger.Server[];
 };

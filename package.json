@@ -45,5 +45,8 @@
     "ts-node": "^8.10.1",
     "typescript": "^3.8.3",
     "typescript-json-schema": "^0.50.1"
+  },
+  "devDependencies": {
+    "bolt": "^0.24.10"
   }
 }
