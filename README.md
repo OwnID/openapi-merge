@@ -16,6 +16,33 @@ This is a multi-package repository that contains:
 
 Depending on your use-case, you may wish to use the CLI tool or the library in your project. Please see the readme file of the specific package for more details.
 
+### Docker
+
+Login to OwnID docker registry:
+
+```shell
+REGION=us-east-2
+AWS_ACCOUNT=450051947300
+aws ecr get-login-password --region $REGION | docker login --username AWS --password-stdin $AWS_ACCOUNT.dkr.ecr.$REGION.amazonaws.com
+```
+
+Then:
+
+```shell
+IMAGE_URI=$AWS_ACCOUNT.dkr.ecr.$REGION.amazonaws.com/openapi-merge
+docker run --rm -v "${PWD}:/cwd" -w /cwd $IMAGE_URI
+```
+
+To build and push:
+
+```shell
+docker build --platform=linux/amd64 -t ${IMAGE_URI}:amd64 .
+docker build --platform=linux/arm64 -t ${IMAGE_URI}:latest -t ${IMAGE_URI}:arm64 .
+docker push ${IMAGE_URI}:amd64
+docker push ${IMAGE_URI}:latest
+docker push ${IMAGE_URI}:arm64
+```
+
 ### Developing on openapi-merge
 
 This project is a multi-package repository and uses the [bolt][1] tool to manage these packages in one development experience.
