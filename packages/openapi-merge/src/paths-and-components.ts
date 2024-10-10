@@ -168,9 +168,8 @@ function ensureUniqueOperationIds(pathItem: Swagger.PathItem, seenOperationIds: 
     }
 }
 
-
-function pushTags(op: Swagger.Operation | undefined, tag: string): void {
-    if (!op) {
+function pushDirTags(op: Swagger.Operation | undefined, tag: string | undefined): void {
+    if (!op || !tag) {
         return
     }
     op.tags = op.tags || [];
@@ -220,7 +219,7 @@ export function mergePathsAndComponents(inputs: MergeInput): PathAndComponents |
     for (let inputIndex = 0; inputIndex < inputs.length; inputIndex++) {
         const input = inputs[inputIndex];
 
-        const {oas: originalOas, pathModification, operationSelection, tagAllOperations} = input;
+        const {oas: originalOas, pathModification, operationSelection, originalFilePath} = input;
         const dispute = getDispute(input);
 
         const oas = dropPathItemsWithNoOperations(runOperationSelection(_.cloneDeep(originalOas), operationSelection));
@@ -331,16 +330,24 @@ export function mergePathsAndComponents(inputs: MergeInput): PathAndComponents |
 
             ensureUniqueOperationIds(copyPathItem, seenOperationIds, dispute);
 
-            if (tagAllOperations) {
-                pushTags(copyPathItem.get, tagAllOperations);
-                pushTags(copyPathItem.put, tagAllOperations);
-                pushTags(copyPathItem.post, tagAllOperations);
-                pushTags(copyPathItem.delete, tagAllOperations);
-                pushTags(copyPathItem.options, tagAllOperations);
-                pushTags(copyPathItem.head, tagAllOperations);
-                pushTags(copyPathItem.patch, tagAllOperations);
-                pushTags(copyPathItem.trace, tagAllOperations);
+            let tag: string | undefined = undefined;
+            if (originalFilePath) {
+                const components = originalFilePath.split('/');
+                for (const component of components) {
+                    if (component !== '.' && component !== '..' && component !== '') {
+                        tag = component;
+                        break;
+                    }
+                }
             }
+            pushDirTags(copyPathItem.get, tag);
+            pushDirTags(copyPathItem.put, tag);
+            pushDirTags(copyPathItem.post, tag);
+            pushDirTags(copyPathItem.delete, tag);
+            pushDirTags(copyPathItem.options, tag);
+            pushDirTags(copyPathItem.head, tag);
+            pushDirTags(copyPathItem.patch, tag);
+            pushDirTags(copyPathItem.trace, tag);
 
             result.paths[newPath] = copyPathItem;
         }

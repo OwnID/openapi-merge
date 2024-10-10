@@ -77,7 +77,7 @@ async function convertInputs(basePath: string, configInputs: ConfigurationInput[
         pathModification: input.pathModification,
         operationSelection: input.operationSelection,
         description: input.description,
-        tagAllOperations: input.tagAllOperations,
+        originalFilePath: isConfigurationInputFromFile(input) ? input.inputFile : undefined
       };
 
       if ('dispute' in input) {

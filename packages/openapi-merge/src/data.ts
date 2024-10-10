@@ -55,7 +55,7 @@ export interface SingleMergeInputBase {
    */
   description?: DescriptionMergeBehaviour;
 
-  tagAllOperations?: string;
+  originalFilePath?: string;
 }
 
 /**
