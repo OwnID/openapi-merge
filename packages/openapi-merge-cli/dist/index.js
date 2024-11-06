@@ -21,7 +21,6 @@ const pjson = require('../package.json');
 const openapi_merge_1 = require("openapi-merge");
 const fs_1 = __importDefault(require("fs"));
 const path_1 = __importDefault(require("path"));
-const data_2 = require("openapi-merge/dist/data");
 const isomorphic_fetch_1 = __importDefault(require("isomorphic-fetch"));
 const js_yaml_1 = __importDefault(require("js-yaml"));
 const file_loading_1 = require("./file-loading");
@@ -131,7 +130,7 @@ function main() {
         }
         logger.log(`## Loaded the inputs into memory, merging the results.`);
         const mergeResult = openapi_merge_1.merge(inputs);
-        if (data_2.isErrorResult(mergeResult)) {
+        if (openapi_merge_1.isErrorResult(mergeResult)) {
             console.error(`Error merging files: ${mergeResult.message} (${mergeResult.type})`);
             process.exit(ERROR_MERGING);
             return;
