@@ -18,7 +18,7 @@ const load_configuration_1 = require("./load-configuration");
 const commander_1 = require("commander");
 /* eslint-disable-next-line @typescript-eslint/no-var-requires */
 const pjson = require('../package.json');
-const openapi_merge_1 = require("openapi-merge");
+const base_1 = require("./base");
 const fs_1 = __importDefault(require("fs"));
 const path_1 = __importDefault(require("path"));
 const isomorphic_fetch_1 = __importDefault(require("isomorphic-fetch"));
@@ -129,8 +129,8 @@ function main() {
             return;
         }
         logger.log(`## Loaded the inputs into memory, merging the results.`);
-        const mergeResult = openapi_merge_1.merge(inputs);
-        if (openapi_merge_1.isErrorResult(mergeResult)) {
+        const mergeResult = base_1.merge(inputs);
+        if (base_1.isErrorResult(mergeResult)) {
             console.error(`Error merging files: ${mergeResult.message} (${mergeResult.type})`);
             process.exit(ERROR_MERGING);
             return;

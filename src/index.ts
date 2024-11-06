@@ -3,7 +3,7 @@ import { loadConfiguration } from "./load-configuration";
 import { Command } from 'commander';
 /* eslint-disable-next-line @typescript-eslint/no-var-requires */
 const pjson = require('../package.json');
-import { merge, MergeInput, isErrorResult, SingleMergeInput } from 'openapi-merge';
+import { merge, MergeInput, isErrorResult, SingleMergeInput } from './base';
 import fs from 'fs';
 import path from 'path';
 import { Swagger } from "atlassian-openapi";

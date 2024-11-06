@@ -12,3 +12,7 @@
 /coverage
 
 .idea
+
+# Generated files
+/result.swagger.yaml
+/out

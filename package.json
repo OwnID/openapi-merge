@@ -7,19 +7,21 @@
   "license": "MIT",
   "private": false,
   "scripts": {
-    "lint": "bolt ws lint",
-    "test": "bolt ws test",
-    "cli": "bolt w openapi-merge-cli run start",
-    "prepare": "husky install"
+    "build": "tsc --project .",
+    "prepare": "tsc --project .",
+    "prepublishOnly": "tsc --project .",
+    "test": "jest --collect-coverage --verbose",
+    "lint": "yarn eslint src --ext .js,.jsx,.ts,.tsx --fix --format=visualstudio",
+    "start": "ts-node --project ./tsconfig.json src/index.ts"
   },
   "bolt": {
     "workspaces": [
       "packages/*"
     ]
   },
-  "main": "packages/openapi-merge-cli/dist/index",
+  "main": "dist/index",
   "bin": {
-    "openapi-merge-cli": "packages/openapi-merge-cli/dist/cli.js"
+    "openapi-merge": "dist/cli.js"
   },
   "files": [
     "packages/*/dist/!(__tests__)",
@@ -54,6 +56,5 @@
     "typescript-json-schema": "^0.50.1"
   },
   "devDependencies": {
-    "bolt": "^0.24.10"
   }
 }
