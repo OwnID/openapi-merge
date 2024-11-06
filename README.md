@@ -2,6 +2,8 @@
 
 Welcome to the openapi-merge repository. This library is intended to be used for merging multiple OpenAPI 3.0 files together. The most common reason that developers want to do this is because they have multiple services that they wish to expose underneath a single API Gateway. Therefore, even though this merging logic is sufficiently generic to be used for most use cases, some of the feature decisions are tailored for that specific use case.
 
+Run `yarn build` to build new `dist`.
+
 ### Screenshots
 
 ![Imgur](https://i.imgur.com/GjnSXCS.png)
@@ -15,33 +17,6 @@ This is a multi-package repository that contains:
 * The openapi-merge CLI tool: [![npm](https://img.shields.io/npm/v/openapi-merge-cli?label=openapi-merge-cli&logo=npm)](https://bit.ly/3bEVq3f)
 
 Depending on your use-case, you may wish to use the CLI tool or the library in your project. Please see the readme file of the specific package for more details.
-
-### Docker
-
-Login to OwnID docker registry:
-
-```shell
-REGION=us-east-2
-AWS_ACCOUNT="..."
-aws ecr get-login-password --region $REGION | docker login --username AWS --password-stdin $AWS_ACCOUNT.dkr.ecr.$REGION.amazonaws.com
-```
-
-Then:
-
-```shell
-IMAGE_URI=$AWS_ACCOUNT.dkr.ecr.$REGION.amazonaws.com/openapi-merge
-docker run --rm -v "${PWD}:/cwd" -w /cwd $IMAGE_URI
-```
-
-To build and push:
-
-```shell
-docker build --platform=linux/amd64 -t ${IMAGE_URI}:amd64 .
-docker build --platform=linux/arm64 -t ${IMAGE_URI}:latest -t ${IMAGE_URI}:arm64 .
-docker push ${IMAGE_URI}:amd64
-docker push ${IMAGE_URI}:latest
-docker push ${IMAGE_URI}:arm64
-```
 
 ### Developing on openapi-merge
 
