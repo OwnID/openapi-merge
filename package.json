@@ -2,7 +2,6 @@
   "name": "openapi-merge",
   "version": "1.0.0",
   "description": "The parent openapi-merge package",
-  "main": "index.js",
   "repository": "git@github.com-personal:robertmassaioli/openapi-merge.git",
   "author": "Robert Massaioli <robertmassaioli@gmail.com>",
   "license": "MIT",
@@ -18,6 +17,14 @@
       "packages/*"
     ]
   },
+  "main": "packages/openapi-merge-cli/dist/index",
+  "bin": {
+    "openapi-merge-cli": "packages/openapi-merge-cli/dist/cli.js"
+  },
+  "files": [
+    "packages/*/dist/!(__tests__)",
+    "packages/*/dist/!(__tests__)/**/*"
+  ],
   "dependencies": {
     "@adobe/jsonschema2md": "^6",
     "@babel/core": "^7.9.6",

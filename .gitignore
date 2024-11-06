@@ -6,8 +6,9 @@
 /node_modules
 
 # Build directories
-/dist
 *.tgz
 
 # don't lint nyc coverage output
 /coverage
+
+.idea
