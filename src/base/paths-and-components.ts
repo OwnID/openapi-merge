@@ -5,6 +5,7 @@ import _ from 'lodash';
 import {runOperationSelection} from "./operation-selection";
 import {deepEquality} from "./component-equivalence";
 import {applyDispute, getDispute} from './dispute';
+import Reference = Swagger.Reference;
 
 export type PathAndComponents = {
     paths: Swagger.Paths;
@@ -19,7 +20,7 @@ function removeFromStart(input: string, trim: string): string {
     return input;
 }
 
-type Components<A> = { [key: string]: A };
+type Components<A> = { [key: string]: A } | Reference;
 type Equal<A> = (x: A, y: A) => boolean;
 type AddModRef = (from: string, to: string) => void;
 
@@ -34,10 +35,12 @@ function processComponents<A>(results: Components<A>, components: Components<A>,
                 addModifiedReference(key, modifiedKey);
             }
 
-            if (results[modifiedKey] === undefined || areEqual(results[modifiedKey], component)) {
+            if (results[modifiedKey] === undefined || areEqual(results[modifiedKey], component) || results[modifiedKey].$ref === key) {
                 // Add the schema
                 results[modifiedKey] = component;
             } else {
+                console.log({key, ref: results[modifiedKey].$ref, component});
+
                 // Distnguish the name and then add the element
                 let schemaPlaced = false;
 
@@ -51,12 +54,9 @@ function processComponents<A>(results: Components<A>, components: Components<A>,
                     }
                 }
 
-                console.error('Trying to find a unique key for', key);
-
                 // Incrementally find the right prefix
                 for (let antiConflict = 1; schemaPlaced === false && antiConflict < 1000; antiConflict++) {
-                    console.error('Trying to find a unique key for', key);
-                    const trySchemaKey = `${key}${antiConflict}???`;
+                    const trySchemaKey = `${key}${antiConflict}`;
 
                     if (results[trySchemaKey] === undefined) {
                         results[trySchemaKey] = component;
@@ -122,8 +122,7 @@ function findUniqueOperationId(operationId: string, seenOperationIds: Set<string
 
     // Incrementally find the right prefix
     for (let antiConflict = 1; antiConflict < 1000; antiConflict++) {
-        console.error('Trying to find a unique operationId for', operationId);
-        const tryOpId = `${operationId}${antiConflict}???`;
+        const tryOpId = `${operationId}${antiConflict}`;
         if (!seenOperationIds.has(tryOpId)) {
             return tryOpId;
         }
