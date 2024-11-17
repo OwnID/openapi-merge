@@ -17,7 +17,7 @@ function removeFromStart(input, trim) {
     return input;
 }
 function processComponents(results, components, areEqual, dispute, addModifiedReference) {
-    var _a;
+    var _a, _b;
     for (const key in components) {
         /* eslint-disable-next-line no-prototype-builtins */
         if (components.hasOwnProperty(key)) {
@@ -26,12 +26,12 @@ function processComponents(results, components, areEqual, dispute, addModifiedRe
             if (modifiedKey !== key) {
                 addModifiedReference(key, modifiedKey);
             }
-            if (results[modifiedKey] === undefined || areEqual(results[modifiedKey], component) || ((_a = results[modifiedKey].$ref) === null || _a === void 0 ? void 0 : _a.split('/').slice(-1).pop()) === key) {
+            if (results[modifiedKey] === undefined || areEqual(results[modifiedKey], component) || ((_a = component.$ref) === null || _a === void 0 ? void 0 : _a.split('/').slice(-1).pop()) === key) {
                 // Add the schema
                 results[modifiedKey] = component;
             }
             else {
-                console.log({ key, ref: results[modifiedKey].$ref, component });
+                console.log({ key, component, x: (_b = results[modifiedKey].$ref) === null || _b === void 0 ? void 0 : _b.split('/').slice(-1).pop() });
                 // Distnguish the name and then add the element
                 let schemaPlaced = false;
                 // Try and use the dispute prefix first

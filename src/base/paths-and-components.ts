@@ -35,11 +35,11 @@ function processComponents<A>(results: Components<A>, components: Components<A>,
                 addModifiedReference(key, modifiedKey);
             }
 
-            if (results[modifiedKey] === undefined || areEqual(results[modifiedKey], component) || results[modifiedKey].$ref?.split('/').slice(-1).pop() === key) {
+            if (results[modifiedKey] === undefined || areEqual(results[modifiedKey], component) || component.$ref?.split('/').slice(-1).pop() === key) {
                 // Add the schema
                 results[modifiedKey] = component;
             } else {
-                console.log({key, ref: results[modifiedKey].$ref, component});
+                console.log({key, component, x: results[modifiedKey].$ref?.split('/').slice(-1).pop()});
 
                 // Distnguish the name and then add the element
                 let schemaPlaced = false;
