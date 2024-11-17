@@ -1,6 +1,6 @@
 {
   "name": "openapi-merge",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "The parent openapi-merge package",
   "repository": "git@github.com-personal:robertmassaioli/openapi-merge.git",
   "author": "Robert Massaioli <robertmassaioli@gmail.com>",
