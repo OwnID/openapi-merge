@@ -39,7 +39,7 @@ function processComponents<A>(results: Components<A>, components: Components<A>,
                 // Add the schema
                 results[modifiedKey] = component;
             } else {
-                console.log({key, component, x: results[modifiedKey].$ref?.split('/').slice(-1).pop()});
+                console.log(`Got a conflict on key '${key}' for component`, component);
 
                 // Distnguish the name and then add the element
                 let schemaPlaced = false;
@@ -112,6 +112,8 @@ function findUniqueOperationId(operationId: string, seenOperationIds: Set<string
         return operationId;
     }
 
+    console.log(`Got a conflict on key '${operationId}'`);
+
     // Try the dispute prefix
     if (dispute !== undefined) {
         const disputeOpId = applyDispute(dispute, operationId, 'disputed');
@@ -119,6 +121,7 @@ function findUniqueOperationId(operationId: string, seenOperationIds: Set<string
             return disputeOpId;
         }
     }
+
 
     // Incrementally find the right prefix
     for (let antiConflict = 1; antiConflict < 1000; antiConflict++) {

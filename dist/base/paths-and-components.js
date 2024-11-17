@@ -17,7 +17,7 @@ function removeFromStart(input, trim) {
     return input;
 }
 function processComponents(results, components, areEqual, dispute, addModifiedReference) {
-    var _a, _b;
+    var _a;
     for (const key in components) {
         /* eslint-disable-next-line no-prototype-builtins */
         if (components.hasOwnProperty(key)) {
@@ -31,7 +31,7 @@ function processComponents(results, components, areEqual, dispute, addModifiedRe
                 results[modifiedKey] = component;
             }
             else {
-                console.log({ key, component, x: (_b = results[modifiedKey].$ref) === null || _b === void 0 ? void 0 : _b.split('/').slice(-1).pop() });
+                console.log(`Got a conflict on key '${key}' for component`, component);
                 // Distnguish the name and then add the element
                 let schemaPlaced = false;
                 // Try and use the dispute prefix first
@@ -92,6 +92,7 @@ function findUniqueOperationId(operationId, seenOperationIds, dispute) {
     if (!seenOperationIds.has(operationId)) {
         return operationId;
     }
+    console.log(`Got a conflict on key '${operationId}'`);
     // Try the dispute prefix
     if (dispute !== undefined) {
         const disputeOpId = dispute_1.applyDispute(dispute, operationId, 'disputed');
