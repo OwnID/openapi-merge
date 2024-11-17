@@ -35,7 +35,10 @@ function processComponents<A>(results: Components<A>, components: Components<A>,
                 addModifiedReference(key, modifiedKey);
             }
 
-            if (results[modifiedKey] === undefined || areEqual(results[modifiedKey], component) || component.$ref?.split('/').slice(-1).pop() === key) {
+            if (component.$ref?.split('/').slice(-1).pop() === key) {
+                continue; // nop
+            }
+            if (results[modifiedKey] === undefined || areEqual(results[modifiedKey], component)) {
                 // Add the schema
                 results[modifiedKey] = component;
             } else {

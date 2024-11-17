@@ -26,7 +26,10 @@ function processComponents(results, components, areEqual, dispute, addModifiedRe
             if (modifiedKey !== key) {
                 addModifiedReference(key, modifiedKey);
             }
-            if (results[modifiedKey] === undefined || areEqual(results[modifiedKey], component) || ((_a = component.$ref) === null || _a === void 0 ? void 0 : _a.split('/').slice(-1).pop()) === key) {
+            if (((_a = component.$ref) === null || _a === void 0 ? void 0 : _a.split('/').slice(-1).pop()) === key) {
+                continue; // nop
+            }
+            if (results[modifiedKey] === undefined || areEqual(results[modifiedKey], component)) {
                 // Add the schema
                 results[modifiedKey] = component;
             }

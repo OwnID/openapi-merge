@@ -47,7 +47,7 @@ class LogWithMillisDiff {
 function loadOasForInput(basePath, input, inputIndex, logger) {
     return __awaiter(this, void 0, void 0, function* () {
         if (data_1.isConfigurationInputFromFile(input)) {
-            const fullPath = path_1.default.join(basePath, input.inputFile);
+            const fullPath = input.inputFile.startsWith('/') ? input.inputFile : path_1.default.join(basePath, input.inputFile);
             logger.log(`## Loading input ${inputIndex}: ${fullPath}`);
             return (yield file_loading_1.readYamlOrJSON(yield file_loading_1.readFileAsString(fullPath)));
         }

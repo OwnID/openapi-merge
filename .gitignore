@@ -16,3 +16,6 @@
 # Generated files
 /result.swagger.yaml
 /out
+
+openapi-merge.json
+*.openapi.yaml

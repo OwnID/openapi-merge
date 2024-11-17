@@ -44,7 +44,7 @@ class LogWithMillisDiff {
 
 async function loadOasForInput(basePath: string, input: ConfigurationInput, inputIndex: number, logger: LogWithMillisDiff): Promise<Swagger.SwaggerV3> {
   if (isConfigurationInputFromFile(input)) {
-    const fullPath = path.join(basePath, input.inputFile);
+    const fullPath = input.inputFile.startsWith('/') ? input.inputFile : path.join(basePath, input.inputFile);
     logger.log(`## Loading input ${inputIndex}: ${fullPath}`);
     return (await readYamlOrJSON(await readFileAsString(fullPath))) as Swagger.SwaggerV3;
   } else {

@@ -1,6 +1,6 @@
 {
   "name": "openapi-merge",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "The parent openapi-merge package",
   "repository": "git@github.com-personal:robertmassaioli/openapi-merge.git",
   "author": "Robert Massaioli <robertmassaioli@gmail.com>",
@@ -12,7 +12,7 @@
     "prepublishOnly": "tsc --project .",
     "test": "jest --collect-coverage --verbose",
     "lint": "yarn eslint src --ext .js,.jsx,.ts,.tsx --fix --format=visualstudio",
-    "start": "ts-node --project ./tsconfig.json src/index.ts"
+    "start": "ts-node --project ./tsconfig.json src/cli.ts"
   },
   "bolt": {
     "workspaces": [
