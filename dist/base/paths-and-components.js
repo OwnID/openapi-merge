@@ -41,9 +41,11 @@ function processComponents(results, components, areEqual, dispute, addModifiedRe
                         schemaPlaced = true;
                     }
                 }
+                console.error('Trying to find a unique key for', key);
                 // Incrementally find the right prefix
                 for (let antiConflict = 1; schemaPlaced === false && antiConflict < 1000; antiConflict++) {
-                    const trySchemaKey = `${key}${antiConflict}`;
+                    console.error('Trying to find a unique key for', key);
+                    const trySchemaKey = `${key}${antiConflict}???`;
                     if (results[trySchemaKey] === undefined) {
                         results[trySchemaKey] = component;
                         addModifiedReference(key, trySchemaKey);
@@ -99,7 +101,8 @@ function findUniqueOperationId(operationId, seenOperationIds, dispute) {
     }
     // Incrementally find the right prefix
     for (let antiConflict = 1; antiConflict < 1000; antiConflict++) {
-        const tryOpId = `${operationId}${antiConflict}`;
+        console.error('Trying to find a unique operationId for', operationId);
+        const tryOpId = `${operationId}${antiConflict}???`;
         if (!seenOperationIds.has(tryOpId)) {
             return tryOpId;
         }
