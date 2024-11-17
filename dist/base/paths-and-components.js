@@ -25,7 +25,7 @@ function processComponents(results, components, areEqual, dispute, addModifiedRe
             if (modifiedKey !== key) {
                 addModifiedReference(key, modifiedKey);
             }
-            if (results[modifiedKey] === undefined || areEqual(results[modifiedKey], component) || results[modifiedKey].$ref === key) {
+            if (results[modifiedKey] === undefined || areEqual(results[modifiedKey], component) || results[modifiedKey].$ref.split('/').slice(-1).pop() === key) {
                 // Add the schema
                 results[modifiedKey] = component;
             }
