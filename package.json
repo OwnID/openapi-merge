@@ -18,11 +18,14 @@
       "packages/*"
     ]
   },
-  "main": "dist/index",
-  "bin": "dist/cli.js",
+  "main": "dist/index.js",
+  "bin": {
+    "openapi-merge": "dist/cli.js"
+  },
   "files": [
-    "packages/*/dist/!(__tests__)",
-    "packages/*/dist/!(__tests__)/**/*"
+    "dist/**/*",
+    "README.md",
+    "LICENSE"
   ],
   "dependencies": {
     "@adobe/jsonschema2md": "^6",
