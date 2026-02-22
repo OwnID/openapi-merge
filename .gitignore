@@ -19,3 +19,5 @@
 
 openapi-merge.json
 *.openapi.yaml
+
+.DS_Store

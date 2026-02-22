@@ -5,7 +5,6 @@
   "repository": "git@github.com-personal:robertmassaioli/openapi-merge.git",
   "author": "Robert Massaioli <robertmassaioli@gmail.com>",
   "license": "MIT",
-  "private": false,
   "scripts": {
     "build": "tsc --project .",
     "prepare": "tsc --project .",
@@ -20,9 +19,7 @@
     ]
   },
   "main": "dist/index",
-  "bin": {
-    "openapi-merge": "dist/cli.js"
-  },
+  "bin": "dist/cli.js",
   "files": [
     "packages/*/dist/!(__tests__)",
     "packages/*/dist/!(__tests__)/**/*"
@@ -54,7 +51,5 @@
     "ts-node": "^8.10.1",
     "typescript": "^3.8.3",
     "typescript-json-schema": "^0.50.1"
-  },
-  "devDependencies": {
   }
 }
