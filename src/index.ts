@@ -76,6 +76,7 @@ async function convertInputs(basePath: string, configInputs: ConfigurationInput[
         pathModification: input.pathModification,
         operationSelection: input.operationSelection,
         description: input.description,
+        externalReferenceRewrites: input.externalReferenceRewrites,
         originalFilePath: isConfigurationInputFromFile(input) ? input.inputFile : undefined
       };
 
@@ -113,7 +114,8 @@ function isYamlExtension(filePath: string): boolean {
 
 function dumpAsYaml(blob: unknown): string {
   // Note: The JSON stringify and parse is required to strip the undefined values: https://github.com/nodeca/js-yaml/issues/571
-  return yaml.safeDump(JSON.parse(JSON.stringify(blob)), { indent: 2 });
+  const output = yaml.safeDump(JSON.parse(JSON.stringify(blob)), { indent: 2 });
+  return output.replace(/^(\s*(?:-\s+)?\$ref:\s+)([^'"].*)$/gm, (line, prefix, reference) => `${prefix}${JSON.stringify(reference)}`);
 }
 
 function writeOutput(outputFullPath: string, outputSchema: Swagger.SwaggerV3): void {

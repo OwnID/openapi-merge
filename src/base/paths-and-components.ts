@@ -23,8 +23,9 @@ function removeFromStart(input: string, trim: string): string {
 type Components<A> = { [key: string]: A } | Reference;
 type Equal<A> = (x: A, y: A) => boolean;
 type AddModRef = (from: string, to: string) => void;
+type KeepRef = (ref: string) => boolean;
 
-function processComponents<A>(results: Components<A>, components: Components<A>, areEqual: Equal<A>, dispute: Dispute | undefined, addModifiedReference: AddModRef): ErrorMergeResult | undefined {
+function processComponents<A>(results: Components<A>, components: Components<A>, areEqual: Equal<A>, dispute: Dispute | undefined, addModifiedReference: AddModRef, keepReference: KeepRef): ErrorMergeResult | undefined {
     for (const key in components) {
         /* eslint-disable-next-line no-prototype-builtins */
         if (components.hasOwnProperty(key)) {
@@ -35,7 +36,7 @@ function processComponents<A>(results: Components<A>, components: Components<A>,
                 addModifiedReference(key, modifiedKey);
             }
 
-            if (component.$ref?.split('/').slice(-1).pop() === key) {
+            if (component.$ref?.split('/').slice(-1).pop() === key && !keepReference(component.$ref)) {
                 continue; // nop
             }
             if (results[modifiedKey] === undefined || areEqual(results[modifiedKey], component)) {
@@ -228,10 +229,11 @@ export function mergePathsAndComponents(inputs: MergeInput): PathAndComponents |
     for (let inputIndex = 0; inputIndex < inputs.length; inputIndex++) {
         const input = inputs[inputIndex];
 
-        const {oas: originalOas, pathModification, operationSelection, originalFilePath} = input;
+        const {oas: originalOas, pathModification, operationSelection, externalReferenceRewrites, originalFilePath} = input;
         const dispute = getDispute(input);
 
         const oas = dropPathItemsWithNoOperations(runOperationSelection(_.cloneDeep(originalOas), operationSelection));
+        const keepExternalReference = (ref: string): boolean => externalReferenceRewrites?.some(({source}) => ref.startsWith(`${source}#`)) === true;
 
         // Original references will be transformed to new non-conflicting references
         const referenceModification: { [originalReference: string]: string } = {};
@@ -245,7 +247,7 @@ export function mergePathsAndComponents(inputs: MergeInput): PathAndComponents |
 
                 processComponents(result.components.schemas, oas.components.schemas, deepEquality(resultLookup, currentLookup), dispute, (from: string, to: string) => {
                     referenceModification[`#/components/schemas/${from}`] = `#/components/schemas/${to}`;
-                });
+                }, keepExternalReference);
             }
 
             if (oas.components.responses !== undefined) {
@@ -253,7 +255,7 @@ export function mergePathsAndComponents(inputs: MergeInput): PathAndComponents |
 
                 processComponents(result.components.responses, oas.components.responses, deepEquality(resultLookup, currentLookup), dispute, (from: string, to: string) => {
                     referenceModification[`#/components/responses/${from}`] = `#/components/responses/${to}`;
-                });
+                }, keepExternalReference);
             }
 
             if (oas.components.parameters !== undefined) {
@@ -261,7 +263,7 @@ export function mergePathsAndComponents(inputs: MergeInput): PathAndComponents |
 
                 processComponents(result.components.parameters, oas.components.parameters, deepEquality(resultLookup, currentLookup), dispute, (from: string, to: string) => {
                     referenceModification[`#/components/parameters/${from}`] = `#/components/parameters/${to}`;
-                });
+                }, keepExternalReference);
             }
 
             // examples
@@ -270,7 +272,7 @@ export function mergePathsAndComponents(inputs: MergeInput): PathAndComponents |
 
                 processComponents(result.components.examples, oas.components.examples, deepEquality(resultLookup, currentLookup), dispute, (from: string, to: string) => {
                     referenceModification[`#/components/examples/${from}`] = `#/components/examples/${to}`;
-                });
+                }, keepExternalReference);
             }
 
             // requestBodies
@@ -279,7 +281,7 @@ export function mergePathsAndComponents(inputs: MergeInput): PathAndComponents |
 
                 processComponents(result.components.requestBodies, oas.components.requestBodies, deepEquality(resultLookup, currentLookup), dispute, (from: string, to: string) => {
                     referenceModification[`#/components/requestBodies/${from}`] = `#/components/requestBodies/${to}`;
-                });
+                }, keepExternalReference);
             }
 
             // headers
@@ -288,7 +290,7 @@ export function mergePathsAndComponents(inputs: MergeInput): PathAndComponents |
 
                 processComponents(result.components.headers, oas.components.headers, deepEquality(resultLookup, currentLookup), dispute, (from: string, to: string) => {
                     referenceModification[`#/components/headers/${from}`] = `#/components/headers/${to}`;
-                });
+                }, keepExternalReference);
             }
 
             // security schemes are different, we just take the security schemes from the first file that has any
@@ -302,7 +304,7 @@ export function mergePathsAndComponents(inputs: MergeInput): PathAndComponents |
 
                 processComponents(result.components.links, oas.components.links, deepEquality(resultLookup, currentLookup), dispute, (from: string, to: string) => {
                     referenceModification[`#/components/links/${from}`] = `#/components/links/${to}`;
-                });
+                }, keepExternalReference);
             }
 
             // callbacks
@@ -311,7 +313,7 @@ export function mergePathsAndComponents(inputs: MergeInput): PathAndComponents |
 
                 processComponents(result.components.callbacks, oas.components.callbacks, deepEquality(resultLookup, currentLookup), dispute, (from: string, to: string) => {
                     referenceModification[`#/components/callbacks/${from}`] = `#/components/callbacks/${to}`;
-                });
+                }, keepExternalReference);
             }
         }
 
@@ -381,6 +383,12 @@ export function mergePathsAndComponents(inputs: MergeInput): PathAndComponents |
                 if (parts.length !== 2) {
                     throw new Error(`Could not split the reference '${ref}' to two parts`);
                 }
+
+                const rewrite = externalReferenceRewrites?.find(({source}) => source === parts[0]);
+                if (rewrite !== undefined) {
+                    return `${rewrite.target}#${parts[1]}`;
+                }
+
                 ref = '#' + parts[1];
             }
 

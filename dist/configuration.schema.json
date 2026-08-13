@@ -117,6 +117,29 @@
             "title": "DisputeSuffix",
             "type": "object"
         },
+        "ExternalReferenceRewrite": {
+            "additionalProperties": false,
+            "properties": {
+                "source": {
+                    "description": "The external path to match before the reference fragment.",
+                    "minLength": 1,
+                    "title": "source",
+                    "type": "string"
+                },
+                "target": {
+                    "description": "The external path that will replace the source while preserving the reference fragment.",
+                    "minLength": 1,
+                    "title": "target",
+                    "type": "string"
+                }
+            },
+            "required": [
+                "source",
+                "target"
+            ],
+            "title": "ExternalReferenceRewrite",
+            "type": "object"
+        },
         "OperationSelection": {
             "additionalProperties": false,
             "properties": {
@@ -395,6 +418,14 @@
                                 "title": "disputePrefix",
                                 "type": "string"
                             },
+                            "externalReferenceRewrites": {
+                                "description": "Rewrite matching external reference paths while preserving their fragments.",
+                                "items": {
+                                    "$ref": "#/definitions/ExternalReferenceRewrite"
+                                },
+                                "title": "externalReferenceRewrites",
+                                "type": "array"
+                            },
                             "inputFile": {
                                 "description": "The path to the input OpenAPI Schema that will be merged.",
                                 "minLength": 1,
@@ -491,6 +522,14 @@
                                 "minLength": 1,
                                 "title": "disputePrefix",
                                 "type": "string"
+                            },
+                            "externalReferenceRewrites": {
+                                "description": "Rewrite matching external reference paths while preserving their fragments.",
+                                "items": {
+                                    "$ref": "#/definitions/ExternalReferenceRewrite"
+                                },
+                                "title": "externalReferenceRewrites",
+                                "type": "array"
                             },
                             "inputURL": {
                                 "description": "The input url that we should load our configuration file from.",
@@ -605,6 +644,14 @@
                                 ],
                                 "title": "dispute"
                             },
+                            "externalReferenceRewrites": {
+                                "description": "Rewrite matching external reference paths while preserving their fragments.",
+                                "items": {
+                                    "$ref": "#/definitions/ExternalReferenceRewrite"
+                                },
+                                "title": "externalReferenceRewrites",
+                                "type": "array"
+                            },
                             "inputFile": {
                                 "description": "The path to the input OpenAPI Schema that will be merged.",
                                 "minLength": 1,
@@ -716,6 +763,14 @@
                                     }
                                 ],
                                 "title": "dispute"
+                            },
+                            "externalReferenceRewrites": {
+                                "description": "Rewrite matching external reference paths while preserving their fragments.",
+                                "items": {
+                                    "$ref": "#/definitions/ExternalReferenceRewrite"
+                                },
+                                "title": "externalReferenceRewrites",
+                                "type": "array"
                             },
                             "inputURL": {
                                 "description": "The input url that we should load our configuration file from.",

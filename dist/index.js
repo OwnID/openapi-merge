@@ -74,6 +74,7 @@ function convertInputs(basePath, configInputs, logger) {
                     pathModification: input.pathModification,
                     operationSelection: input.operationSelection,
                     description: input.description,
+                    externalReferenceRewrites: input.externalReferenceRewrites,
                     originalFilePath: data_1.isConfigurationInputFromFile(input) ? input.inputFile : undefined
                 };
                 if ('dispute' in input) {
@@ -101,7 +102,8 @@ function isYamlExtension(filePath) {
 }
 function dumpAsYaml(blob) {
     // Note: The JSON stringify and parse is required to strip the undefined values: https://github.com/nodeca/js-yaml/issues/571
-    return js_yaml_1.default.safeDump(JSON.parse(JSON.stringify(blob)), { indent: 2 });
+    const output = js_yaml_1.default.safeDump(JSON.parse(JSON.stringify(blob)), { indent: 2 });
+    return output.replace(/^(\s*(?:-\s+)?\$ref:\s+)([^'"].*)$/gm, (line, prefix, reference) => `${prefix}${JSON.stringify(reference)}`);
 }
 function writeOutput(outputFullPath, outputSchema) {
     const fileContents = isYamlExtension(outputFullPath)

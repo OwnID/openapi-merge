@@ -1,5 +1,5 @@
-import { MergeInput, MergeResult, isErrorResult, PathModification, OperationSelection, SingleMergeInput } from './data';
-export { MergeInput, MergeResult, isErrorResult, PathModification, OperationSelection, SingleMergeInput };
+import { MergeInput, MergeResult, isErrorResult, PathModification, OperationSelection, SingleMergeInput, ExternalReferenceRewrite } from './data';
+export { MergeInput, MergeResult, isErrorResult, PathModification, OperationSelection, SingleMergeInput, ExternalReferenceRewrite };
 /**
  * Swagger Merge Tool
  */

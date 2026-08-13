@@ -11,6 +11,10 @@ export declare type OperationSelection = {
      */
     excludeTags?: string[];
 };
+export declare type ExternalReferenceRewrite = {
+    source: string;
+    target: string;
+};
 export interface DisputeBase {
     /**
      * If this is set to true, then this prefix will always be applied to every Schema, even if there is no dispute
@@ -44,6 +48,7 @@ export interface SingleMergeInputBase {
      * into the final resulting OpenAPI file
      */
     description?: DescriptionMergeBehaviour;
+    externalReferenceRewrites?: ExternalReferenceRewrite[];
     originalFilePath?: string;
 }
 /**

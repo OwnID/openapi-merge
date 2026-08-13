@@ -16,7 +16,7 @@ function removeFromStart(input, trim) {
     }
     return input;
 }
-function processComponents(results, components, areEqual, dispute, addModifiedReference) {
+function processComponents(results, components, areEqual, dispute, addModifiedReference, keepReference) {
     var _a;
     for (const key in components) {
         /* eslint-disable-next-line no-prototype-builtins */
@@ -26,7 +26,7 @@ function processComponents(results, components, areEqual, dispute, addModifiedRe
             if (modifiedKey !== key) {
                 addModifiedReference(key, modifiedKey);
             }
-            if (((_a = component.$ref) === null || _a === void 0 ? void 0 : _a.split('/').slice(-1).pop()) === key) {
+            if (((_a = component.$ref) === null || _a === void 0 ? void 0 : _a.split('/').slice(-1).pop()) === key && !keepReference(component.$ref)) {
                 continue; // nop
             }
             if (results[modifiedKey] === undefined || areEqual(results[modifiedKey], component)) {
@@ -193,9 +193,10 @@ function mergePathsAndComponents(inputs) {
     };
     for (let inputIndex = 0; inputIndex < inputs.length; inputIndex++) {
         const input = inputs[inputIndex];
-        const { oas: originalOas, pathModification, operationSelection, originalFilePath } = input;
+        const { oas: originalOas, pathModification, operationSelection, externalReferenceRewrites, originalFilePath } = input;
         const dispute = dispute_1.getDispute(input);
         const oas = dropPathItemsWithNoOperations(operation_selection_1.runOperationSelection(lodash_1.default.cloneDeep(originalOas), operationSelection));
+        const keepExternalReference = (ref) => (externalReferenceRewrites === null || externalReferenceRewrites === void 0 ? void 0 : externalReferenceRewrites.some(({ source }) => ref.startsWith(`${source}#`))) === true;
         // Original references will be transformed to new non-conflicting references
         const referenceModification = {};
         // For each component in the original input, place it in the output with deduplicate taking place
@@ -206,40 +207,40 @@ function mergePathsAndComponents(inputs) {
                 result.components.schemas = result.components.schemas || {};
                 processComponents(result.components.schemas, oas.components.schemas, component_equivalence_1.deepEquality(resultLookup, currentLookup), dispute, (from, to) => {
                     referenceModification[`#/components/schemas/${from}`] = `#/components/schemas/${to}`;
-                });
+                }, keepExternalReference);
             }
             if (oas.components.responses !== undefined) {
                 result.components.responses = result.components.responses || {};
                 processComponents(result.components.responses, oas.components.responses, component_equivalence_1.deepEquality(resultLookup, currentLookup), dispute, (from, to) => {
                     referenceModification[`#/components/responses/${from}`] = `#/components/responses/${to}`;
-                });
+                }, keepExternalReference);
             }
             if (oas.components.parameters !== undefined) {
                 result.components.parameters = result.components.parameters || {};
                 processComponents(result.components.parameters, oas.components.parameters, component_equivalence_1.deepEquality(resultLookup, currentLookup), dispute, (from, to) => {
                     referenceModification[`#/components/parameters/${from}`] = `#/components/parameters/${to}`;
-                });
+                }, keepExternalReference);
             }
             // examples
             if (oas.components.examples !== undefined) {
                 result.components.examples = result.components.examples || {};
                 processComponents(result.components.examples, oas.components.examples, component_equivalence_1.deepEquality(resultLookup, currentLookup), dispute, (from, to) => {
                     referenceModification[`#/components/examples/${from}`] = `#/components/examples/${to}`;
-                });
+                }, keepExternalReference);
             }
             // requestBodies
             if (oas.components.requestBodies !== undefined) {
                 result.components.requestBodies = result.components.requestBodies || {};
                 processComponents(result.components.requestBodies, oas.components.requestBodies, component_equivalence_1.deepEquality(resultLookup, currentLookup), dispute, (from, to) => {
                     referenceModification[`#/components/requestBodies/${from}`] = `#/components/requestBodies/${to}`;
-                });
+                }, keepExternalReference);
             }
             // headers
             if (oas.components.headers !== undefined) {
                 result.components.headers = result.components.headers || {};
                 processComponents(result.components.headers, oas.components.headers, component_equivalence_1.deepEquality(resultLookup, currentLookup), dispute, (from, to) => {
                     referenceModification[`#/components/headers/${from}`] = `#/components/headers/${to}`;
-                });
+                }, keepExternalReference);
             }
             // security schemes are different, we just take the security schemes from the first file that has any
             if (oas.components.securitySchemes !== undefined && Object.keys(oas.components.securitySchemes).length > 0 && result.components.securitySchemes === undefined) {
@@ -250,14 +251,14 @@ function mergePathsAndComponents(inputs) {
                 result.components.links = result.components.links || {};
                 processComponents(result.components.links, oas.components.links, component_equivalence_1.deepEquality(resultLookup, currentLookup), dispute, (from, to) => {
                     referenceModification[`#/components/links/${from}`] = `#/components/links/${to}`;
-                });
+                }, keepExternalReference);
             }
             // callbacks
             if (oas.components.callbacks !== undefined) {
                 result.components.callbacks = result.components.callbacks || {};
                 processComponents(result.components.callbacks, oas.components.callbacks, component_equivalence_1.deepEquality(resultLookup, currentLookup), dispute, (from, to) => {
                     referenceModification[`#/components/callbacks/${from}`] = `#/components/callbacks/${to}`;
-                });
+                }, keepExternalReference);
             }
         }
         // For each path, convert it into the right format (looking out for duplicates)
@@ -314,6 +315,10 @@ function mergePathsAndComponents(inputs) {
                 const parts = ref.split('#');
                 if (parts.length !== 2) {
                     throw new Error(`Could not split the reference '${ref}' to two parts`);
+                }
+                const rewrite = externalReferenceRewrites === null || externalReferenceRewrites === void 0 ? void 0 : externalReferenceRewrites.find(({ source }) => source === parts[0]);
+                if (rewrite !== undefined) {
+                    return `${rewrite.target}#${parts[1]}`;
                 }
                 ref = '#' + parts[1];
             }

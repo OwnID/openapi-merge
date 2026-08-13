@@ -11,6 +11,10 @@ export declare type OperationSelection = {
      */
     excludeTags?: string[];
 };
+export declare type ExternalReferenceRewrite = {
+    source: string;
+    target: string;
+};
 export declare type PathModification = {
     /**
        * If a path starts with these characters, then stip them from the beginning of the path. Will run before prepend.
@@ -128,6 +132,7 @@ export interface ConfigurationInputBase {
      * @examples require('./examples-for-schema.ts').DescriptionMergeBehaviourExamples
      */
     description?: DescriptionMergeBehaviour;
+    externalReferenceRewrites?: ExternalReferenceRewrite[];
     tagAllOperations?: string;
 }
 /**
