@@ -100,10 +100,31 @@ function isYamlExtension(filePath) {
     const extension = path_1.default.extname(filePath);
     return ['.yaml', '.yml'].includes(extension);
 }
+function replaceReferencesWithPlaceholders(node, references) {
+    if (typeof node !== 'object' || node === null) {
+        return;
+    }
+    const object = node;
+    for (const key of Object.keys(object)) {
+        if (key === '$ref' && typeof object[key] === 'string') {
+            const referenceIndex = references.push(object[key]) - 1;
+            object[key] = `__OPENAPI_MERGE_REF_${referenceIndex}__`;
+        }
+        else {
+            replaceReferencesWithPlaceholders(object[key], references);
+        }
+    }
+}
 function dumpAsYaml(blob) {
     // Note: The JSON stringify and parse is required to strip the undefined values: https://github.com/nodeca/js-yaml/issues/571
-    const output = js_yaml_1.default.safeDump(JSON.parse(JSON.stringify(blob)), { indent: 2 });
-    return output.replace(/^(\s*(?:-\s+)?\$ref:\s+)([^'"].*)$/gm, (line, prefix, reference) => `${prefix}${JSON.stringify(reference)}`);
+    const serializable = JSON.parse(JSON.stringify(blob));
+    const references = [];
+    replaceReferencesWithPlaceholders(serializable, references);
+    let output = js_yaml_1.default.safeDump(serializable, { indent: 2 });
+    references.forEach((reference, referenceIndex) => {
+        output = output.replace(`$ref: __OPENAPI_MERGE_REF_${referenceIndex}__`, `$ref: ${JSON.stringify(reference)}`);
+    });
+    return output;
 }
 function writeOutput(outputFullPath, outputSchema) {
     const fileContents = isYamlExtension(outputFullPath)
